@@ -1,52 +1,29 @@
 import pygame
+from introScreen import drawIntroScreen
+from homeScreen import drawHomeScreen
 
-SCREEN_WIDTH=800
-
-SCREEN_HEIGHT=600
-
-pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+window = pygame.display.set_mode((800, 600))
 done = False
 
 # titre de la fenetre
 
 pygame.display.set_caption("Space Invaders")
 
-# creation de l'image de fond
-
-backgroundImage=pygame.image.load ("assets\start.jpg")
-
-# creation des textes
-
-titleFont = pygame.font.SysFont('Comic Sans MS', 40)
-
-startTextFont = pygame.font.SysFont('Comic Sans MS', 30)
-
-title = titleFont.render('Space Invaders', False, (255, 255, 255))
-
-startText = startTextFont.render('to play', False, (255, 255, 255))
-
-startText.set_alpha(255)
-
-goToAlpha=True
+gameState = 'intro'
 
 while not done:
+    pygame.draw.rect(window, (0, 0, 0),
+                     (0, 0, window.get_width(), window.get_height()))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+        elif event.type == pygame.KEYUP:
+            if gameState == "intro":
+                gameState = "home"
 
+    if gameState == "intro":
+        drawIntroScreen(window)
+    elif gameState == "home":
+        drawHomeScreen(window)
 
-    if goToAlpha:
-        startText.set_alpha(startText.get_alpha()-1)
-        if startText.get_alpha() == 0:
-            goToAlpha=False
-    else:
-        startText.set_alpha(startText.get_alpha()+1)
-        if startText.get_alpha() == 255:
-            goToAlpha=True
-
-    screen.blit(backgroundImage, (-235, -200))
-    screen.blit(title, (250, 0))
-    screen.blit(startText, (350, SCREEN_HEIGHT-100))
     pygame.display.flip()
-
