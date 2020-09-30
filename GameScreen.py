@@ -11,24 +11,27 @@ gameText = startTextFont.render('game', False, (255, 255, 255))
 backgroundImage = pygame.image.load("./assets/fond.png")
 
 # img vaisseau
-
 vaisseauImage = pygame.image.load("./assets/vaisseau.png")
+
+vaisseauMoveToRight = False
+vaisseauMoveToLeft = False
+
+xVaisseau = 400
+
+yVaisseau = 550
 
 # img alien
 
 alienImage = pygame.image.load("./assets/alien_1_0.png")
 
-xVaisseau=400
-
-yVaisseau=550
-
-#img alien 2
+# img alien 2
 
 alien2Image = pygame.image.load("./assets/alien_2_0.png")
 
+# Ici on dessine l'ecran de jeu
 
-def drawGameScreen(window, gameInfo):
 
+def __draw(window, gameInfo):
     global xVaisseau
 
     global yVaisseau
@@ -38,34 +41,67 @@ def drawGameScreen(window, gameInfo):
 
     window.blit(gameText, (xText, 200))
 
-    window.blit(backgroundImage, (0 , 0))
+    window.blit(backgroundImage, (0, 0))
 
-    window.blit(vaisseauImage, (xVaisseau , yVaisseau))
-    
-    compteur=0
-    
-    while compteur < 16:
-        alienSize=32
-        alienSpace=60
-        window.blit(alienImage, ((alienSize+alienSpace*compteur) , 0))
-        compteur=compteur+1
+    window.blit(vaisseauImage, (xVaisseau, yVaisseau))
 
-    compteur=0
+    compteur = 0
 
     while compteur < 16:
-        alien2Size=32
-        alien2Space=60
-        alienySpace=10
-        window.blit(alien2Image, ((alien2Size+alien2Space*compteur) , alienSize+alienySpace))
-        compteur=compteur+1
+        alienSize = 32
+        alienSpace = 60
+        window.blit(alienImage, ((alienSize+alienSpace*compteur), 0))
+        compteur = compteur+1
+
+    compteur = 0
+
+    while compteur < 16:
+        alien2Size = 32
+        alien2Space = 60
+        alienySpace = 10
+        window.blit(
+            alien2Image, ((alien2Size+alien2Space*compteur), alienSize+alienySpace))
+        compteur = compteur+1
+
+# Ici on gere la mise à jour
+
+
+def __update():
+    global vaisseauMoveToRight, vaisseauMoveToLeft, xVaisseau
+    if vaisseauMoveToRight:
+        xVaisseau = xVaisseau+10
+    if vaisseauMoveToLeft:
+        xVaisseau = xVaisseau-10
+
+    print('vaisseauMoveToRight:', vaisseauMoveToRight)
+    print('vaisseauMoveToLeft:', vaisseauMoveToLeft)
+    # Ici on gere les evenements
+
+
+def __events(gameInfo):
+    global vaisseauMoveToRight, vaisseauMoveToLeft
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             gameInfo["done"] = True
         if event.type == pygame.KEYDOWN:
             # ici on suppose que vous avez fait un simple import pygame
-            if event.key == pygame.K_d:
-                xVaisseau=xVaisseau+10
-            if event.key == pygame.K_a:
-                xVaisseau=xVaisseau-10
+            if event.key == pygame.K_RIGHT:
+                # xVaisseau = xVaisseau+10
+                vaisseauMoveToRight = True
+            if event.key == pygame.K_LEFT:
+                # xVaisseau = xVaisseau-10
+                vaisseauMoveToLeft = True
+        if event.type == pygame.KEYUP:
+            # ici on suppose que vous avez fait un simple import pygame
+            if event.key == pygame.K_RIGHT:
+                vaisseauMoveToRight = False
+            if event.key == pygame.K_LEFT:
+                # xVaisseau = xVaisseau-10
+                vaisseauMoveToLeft = False
 
+
+def drawGameScreen(window, gameInfo):
+    __events(gameInfo)
+    __update()
+    __draw(window, gameInfo)
