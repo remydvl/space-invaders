@@ -30,13 +30,40 @@ vaisseau = {
     "projectilsList": []
 }
 
-# img alien
+# alien
+aliensImages = {
+    "1_0": pygame.image.load("./assets/alien_1_0.png"),
+    "1_1": pygame.image.load("./assets/alien_1_1.png"),
+    "2_0": pygame.image.load("./assets/alien_2_0.png"),
+    "2_1": pygame.image.load("./assets/alien_2_1.png")
+}
 
-alienImage = pygame.image.load("./assets/alien_1_0.png")
+alienBase = {
+    "type": 1,
+    "animation": 0,
+    "x": 0,
+    "y": 0,
+}
 
-# img alien 2
+col = 16
+row = 5
 
-alien2Image = pygame.image.load("./assets/alien_2_0.png")
+aliensList = []
+
+rowCounter = 0
+while rowCounter < row:
+    colCounter = 0
+    while colCounter < col:
+        alienSize = 32
+        alienSpace = 10
+        screenMarge = 50
+        newAlien = alienBase.copy()
+        newAlien["x"] = (alienSize + alienSpace) * colCounter + screenMarge
+        newAlien["y"] = (alienSize + alienSpace) * rowCounter
+        newAlien["type"] = (rowCounter % 2) + 1
+        aliensList.append(newAlien)
+        colCounter += 1
+    rowCounter += 1
 
 
 def __draw(window, gameInfo):
@@ -53,25 +80,13 @@ def __draw(window, gameInfo):
     for bullet in vaisseau["projectilsList"]:
         window.blit(bullet["image"], (bullet["x"], bullet["y"]))
 
-    compteur = 0
-
-    while compteur < 16:
-        alienSize = 32
-        alienSpace = 60
-        window.blit(alienImage, ((alienSize+alienSpace*compteur), 0))
-        compteur = compteur+1
-
-    compteur = 0
-
-    while compteur < 16:
-        alien2Size = 32
-        alien2Space = 60
-        alienySpace = 10
-        window.blit(
-            alien2Image,
-            ((alien2Size+alien2Space*compteur), alienSize+alienySpace)
-        )
-        compteur = compteur+1
+    for alien in aliensList:
+        alienImage = aliensImages[
+            str(alien["type"]) +
+            "_" +
+            str(alien["animation"])
+        ]
+        window.blit(alienImage, (alien["x"], alien["y"]))
 
 
 def __update(window):
@@ -94,7 +109,6 @@ def __update(window):
     i = len(vaisseau["projectilsList"]) - 1
     while i >= 0:
         if vaisseau["projectilsList"][i]["destroyed"]:
-            print('yo')
             vaisseau["projectilsList"].pop(i)
         i -= 1
 
