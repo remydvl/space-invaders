@@ -63,21 +63,20 @@ def __draw(window, gameInfo):
             alien2Image, ((alien2Size+alien2Space*compteur), alienSize+alienySpace))
         compteur = compteur+1
 
+
 # Ici on gere la mise à jour
-
-
-def __update():
+def __update(window):
+    marge=50
     global vaisseauMoveToRight, vaisseauMoveToLeft, xVaisseau
     if vaisseauMoveToRight:
-        xVaisseau = xVaisseau+10
+        if xVaisseau < window.get_width()-32 - marge:
+            xVaisseau = xVaisseau+10
     if vaisseauMoveToLeft:
-        xVaisseau = xVaisseau-10
-
-    print('vaisseauMoveToRight:', vaisseauMoveToRight)
-    print('vaisseauMoveToLeft:', vaisseauMoveToLeft)
-    # Ici on gere les evenements
+        if xVaisseau > 0 + marge:
+            xVaisseau = xVaisseau-10
 
 
+# Ici on gere les evenements
 def __events(gameInfo):
     global vaisseauMoveToRight, vaisseauMoveToLeft
 
@@ -103,5 +102,5 @@ def __events(gameInfo):
 
 def drawGameScreen(window, gameInfo):
     __events(gameInfo)
-    __update()
+    __update(window)
     __draw(window, gameInfo)
