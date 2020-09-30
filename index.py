@@ -6,8 +6,8 @@ from GameScreen import drawGameScreen
 window = pygame.display.set_mode((800, 600))
 
 gameInfo = {
-    "done" : False,
-    "gameState" : 'intro'
+    "done": False,
+    "gameState": 'intro'
 }
 
 # titre de la fenetre
