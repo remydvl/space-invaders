@@ -36,7 +36,7 @@ def _checkTextAlpha():
             goToAlpha = True
 
 
-def drawIntroScreen(window):
+def drawIntroScreen(window, gameInfo):
     _checkTextAlpha()
 
     # Ici je centre la position en X des textes
@@ -49,3 +49,9 @@ def drawIntroScreen(window):
     window.blit(backgroundImage, (-235, -200))
     window.blit(title, (xTitle, yTitle))
     window.blit(startText, (xStartText, yStartText))
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            gameInfo["done"] = True
+        elif event.type == pygame.KEYUP:
+            gameInfo["gameState"] = "home"

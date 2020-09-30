@@ -9,10 +9,16 @@ optionText = startTextFont.render('Options', False, (255, 255, 255))
 returnText = startTextFont.render('Return', False, (255, 255, 255))
 
 
-def drawHomeScreen(window):
+def drawHomeScreen(window, gameInfo):
     # Ici je centre la position en X des textes
     xText = window.get_width() / 2 - optionText.get_width() / 2
 
     window.blit(playText, (xText, 200))
     window.blit(optionText, (xText, 300))
     window.blit(returnText, (xText, 400))
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            gameInfo["done"] = True
+        elif event.type == pygame.KEYUP:
+            gameInfo["gameState"] = "game"
