@@ -1,4 +1,10 @@
 import pygame
+import time
+
+# ICI on definis la config du jeu
+ALIENS_ANIMATION_TIME = 1.000
+ALIENS_ANIMATION_MOVE = 10
+ALIENS_MAX_RIGHT = 50
 
 pygame.font.init()
 
@@ -7,11 +13,9 @@ startTextFont = pygame.font.SysFont('Comic Sans MS', 50)
 gameText = startTextFont.render('game', False, (255, 255, 255))
 
 # img de fond
-
 backgroundImage = pygame.image.load("./assets/fond.png")
 
 # projectil
-
 projectil = {
     "image": pygame.image.load("./assets/shoot.png"),
     "x": 0,
@@ -20,7 +24,6 @@ projectil = {
 }
 
 # vaisseau
-
 vaisseau = {
     "image": pygame.image.load("./assets/vaisseau.png"),
     "moveToRight": False,
@@ -38,9 +41,14 @@ aliensImages = {
     "2_1": pygame.image.load("./assets/alien_2_1.png")
 }
 
+aliensMoveX = 0
+aliensMoveY = 0
+aliensLastXDirection = "RIGHT"
+aliensDirection = "RIGHT"
+aliensAnimation = 0
+
 alienBase = {
     "type": 1,
-    "animation": 0,
     "x": 0,
     "y": 0,
 }
@@ -65,6 +73,8 @@ while rowCounter < row:
         colCounter += 1
     rowCounter += 1
 
+aliensAnimationTime = time.time()
+
 
 def __draw(window, gameInfo):
     # Ici on dessine l'ecran de jeu
@@ -84,13 +94,16 @@ def __draw(window, gameInfo):
         alienImage = aliensImages[
             str(alien["type"]) +
             "_" +
-            str(alien["animation"])
+            str(aliensAnimation)
         ]
-        window.blit(alienImage, (alien["x"], alien["y"]))
+        window.blit(alienImage, (alien["x"] +
+                                 aliensMoveX, alien["y"] + aliensMoveY))
 
 
 def __update(window):
-    # Ici on gere la mise à jour
+    global aliensAnimationTime, aliensDirection, aliensMoveX, aliensMoveY, aliensLastXDirection, aliensAnimation
+
+    # Vaisseau
     marge = 50
     if vaisseau["moveToRight"]:
         if vaisseau["x"] < window.get_width()-32 - marge:
@@ -101,6 +114,7 @@ def __update(window):
             # Idem
             vaisseau["x"] -= 10
 
+    # Projectiles
     for bullet in vaisseau["projectilsList"]:
         bullet["y"] -= 10
         if bullet["y"] < 0:
@@ -111,6 +125,32 @@ def __update(window):
         if vaisseau["projectilsList"][i]["destroyed"]:
             vaisseau["projectilsList"].pop(i)
         i -= 1
+
+    # aliens
+
+    if time.time() - aliensAnimationTime > ALIENS_ANIMATION_TIME:
+        if aliensAnimation == 0:
+            aliensAnimation = 1
+        else:
+            aliensAnimation = 0
+        # Verifier la direction
+        if aliensDirection == "RIGHT":
+            aliensMoveX += ALIENS_ANIMATION_MOVE
+            if aliensMoveX > ALIENS_MAX_RIGHT:
+                aliensDirection = "BOTTOM"
+        elif aliensDirection == "LEFT":
+            aliensMoveX -= ALIENS_ANIMATION_MOVE
+            if aliensMoveX < 0:
+                aliensDirection = "BOTTOM"
+        elif aliensDirection == "BOTTOM":
+            aliensMoveY += ALIENS_ANIMATION_MOVE
+            if aliensLastXDirection == "RIGHT":
+                aliensDirection = "LEFT"
+                aliensLastXDirection = "LEFT"
+            else:
+                aliensDirection = "RIGHT"
+                aliensLastXDirection = "RIGHT"
+        aliensAnimationTime = time.time()
 
 
 def __events(gameInfo):

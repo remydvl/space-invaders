@@ -6,8 +6,6 @@ SCREEN_HEIGHT = 600
 
 pygame.font.init()
 
-print()
-
 titleFont = pygame.font.SysFont('Comic Sans MS', 80)
 startTextFont = pygame.font.SysFont('Comic Sans MS', 60)
 
