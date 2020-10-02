@@ -11,7 +11,7 @@ startTextFont = pygame.font.SysFont('Comic Sans MS', 60)
 
 title = titleFont.render('Space Invaders', False, (255, 255, 255))
 startText = startTextFont.render('to play', False, (255, 255, 255))
-backgroundImage = pygame.image.load("./assets/start.jpg")
+backgroundImage = pygame.image.load("./assets/images/menu/start.jpg")
 
 goToAlpha = True
 

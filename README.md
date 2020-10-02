@@ -2,7 +2,7 @@
 
 # space invaders 
 
-![my game](./assets/start.jpg)
+![my game](./assets/images/menu/start.jpg)
 
 </div>
 
