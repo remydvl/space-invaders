@@ -1,5 +1,6 @@
 import pygame
 import time
+from utils.images import getImage
 
 # ICI on definis la config du jeu
 ALIENS_ANIMATION_TIME = 1.000
@@ -13,11 +14,12 @@ startTextFont = pygame.font.SysFont('Comic Sans MS', 50)
 gameText = startTextFont.render('game', False, (255, 255, 255))
 
 # img de fond
-backgroundImage = pygame.image.load("./assets/images/level-2/fond.png")
+backgroundImage = pygame.image.load(
+    getImage("../assets/images/level-2/fond.png"))
 
 # projectil
 projectil = {
-    "image": pygame.image.load("./assets/images/level-1/shoot.png"),
+    "image": pygame.image.load(getImage("../assets/images/level-1/shoot.png")),
     "x": 0,
     "y": 0,
     "destroyed": False
@@ -25,7 +27,7 @@ projectil = {
 
 # vaisseau
 vaisseau = {
-    "image": pygame.image.load("./assets/images/level-1/vaisseau.png"),
+    "image": pygame.image.load(getImage("../assets/images/level-1/vaisseau.png")),
     "moveToRight": False,
     "moveToLeft": False,
     "x": 400,
@@ -35,10 +37,10 @@ vaisseau = {
 
 # alien
 aliensImages = {
-    "1_0": pygame.image.load("./assets/images/level-1/alien_1_0.png"),
-    "1_1": pygame.image.load("./assets/images/level-1/alien_1_1.png"),
-    "2_0": pygame.image.load("./assets/images/level-1/alien_2_0.png"),
-    "2_1": pygame.image.load("./assets/images/level-1/alien_2_1.png")
+    "1_0": pygame.image.load(getImage("../assets/images/level-1/alien_1_0.png")),
+    "1_1": pygame.image.load(getImage("../assets/images/level-1/alien_1_1.png")),
+    "2_0": pygame.image.load(getImage("../assets/images/level-1/alien_2_0.png")),
+    "2_1": pygame.image.load(getImage("../assets/images/level-1/alien_2_1.png"))
 }
 
 aliensMoveX = 0

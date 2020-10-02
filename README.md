@@ -12,7 +12,7 @@ un space invaders like en python
 
 pour start le jeu:
 
-`py main.py`
+`py src/index.py`
 
 ## Installation
 
