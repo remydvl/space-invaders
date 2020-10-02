@@ -11,12 +11,6 @@ pygame.font.init()
 
 startTextFont = pygame.font.SysFont('Comic Sans MS', 50)
 
-gameText = startTextFont.render('game', False, (255, 255, 255))
-
-# img de fond
-backgroundImage = pygame.image.load(
-    getImage("../assets/images/level-2/fond.png"))
-
 # projectil
 projectil = {
     "image": pygame.image.load(getImage("../assets/images/level-1/shoot.png")),
@@ -80,12 +74,6 @@ aliensAnimationTime = time.time()
 
 def __draw(window, gameInfo):
     # Ici on dessine l'ecran de jeu
-    # Ici je centre la position en X des textes
-    xText = window.get_width() / 2 - gameText.get_width() / 2
-
-    window.blit(gameText, (xText, 200))
-
-    window.blit(backgroundImage, (0, 0))
 
     window.blit(vaisseau["image"], (vaisseau["x"], vaisseau["y"]))
 
@@ -98,8 +86,9 @@ def __draw(window, gameInfo):
             "_" +
             str(aliensAnimation)
         ]
-        window.blit(alienImage, (alien["x"] +
-                                 aliensMoveX, alien["y"] + aliensMoveY))
+        window.blit(
+            alienImage,
+            (alien["x"] + aliensMoveX, alien["y"] + aliensMoveY))
 
 
 def __update(window):
