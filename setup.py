@@ -7,9 +7,11 @@ build_exe_options = {"packages": ["os"], "excludes": ["tkinter"]}
 base = None
 if sys.platform == "win32":
     base = "Win32GUI"
-setup(name="Space invader",
-      version="0.0.1",
-      description="Space invader",
-      options={"build_exe": build_exe_options},
-      executables=[Executable("index.py", base=base)])
-      
+
+setup(
+    name="Space invader",
+    version="0.0.1",
+    description="Space invader",
+    options={"build_exe": build_exe_options},
+    executables=[Executable("index.py", base=base)]
+)

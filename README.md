@@ -2,7 +2,7 @@
 
 # space invaders 
 
-![my game](./assets/start.jpg)
+![my game](./assets/images/menu/start.jpg)
 
 </div>
 
@@ -12,7 +12,7 @@ un space invaders like en python
 
 pour start le jeu:
 
-`py main.py`
+`py src/index.py`
 
 ## Installation
 
