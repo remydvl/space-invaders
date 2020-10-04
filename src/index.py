@@ -2,8 +2,12 @@ import pygame
 from screens.introScreen import drawIntroScreen
 from screens.homeScreen import drawHomeScreen
 from screens.gameScreen import drawGameScreen
+from screens.gameOverScreen import drawGameOverScreen
+
 
 window = pygame.display.set_mode((800, 600))
+
+# gameState = 'intro' OU 'home' OU 'game' OU 'game-over'
 
 gameInfo = {
     "done": False,
@@ -26,5 +30,7 @@ while not gameInfo["done"]:
 
     elif gameInfo["gameState"] == "game":
         drawGameScreen(window, gameInfo)
+    elif gameInfo["gameState"] == "game-over":
+        drawGameOverScreen(window, gameInfo)
 
     pygame.display.flip()
