@@ -1,6 +1,6 @@
 <div center="align">
 
-# space invaders 
+# space evolution 
 
 ![my game](./src/assets/images/menu/start.jpg)
 
@@ -8,7 +8,7 @@
 
 ## Description
 
-un space invaders like en python 
+un space invaders like en python avec évolution des graphismes et du gameplay à chaques niveaux.
 
 pour start le jeu:
 
