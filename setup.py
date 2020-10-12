@@ -19,6 +19,10 @@ setup(
     version="0.0.1",
     description="Space invader",
     options={"build_exe": build_exe_options},
-    executables=[Executable("./src/index.py", base=base,
-                            targetName="Space-evolution", icon="src/assets/images/menu/start.jpg")]
+    executables=[Executable(
+        "./src/index.py",
+        base=base,
+        targetName="Space-evolution",
+        icon="src/assets/images/level-1/alien_1_0.png")
+    ]
 )

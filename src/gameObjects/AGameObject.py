@@ -21,8 +21,14 @@ class AGameObject:
     def getWidth(self):
         return self.__width
 
+    def setWidth(self, newWidth):
+        self.__width = newWidth
+
     def getHeight(self):
         return self.__height
+
+    def setHeight(self, newHeight):
+        self.__height = newHeight
 
     def draw(self, window, additionalMove={"x": 0, "y": 0}):
         window.blit(
