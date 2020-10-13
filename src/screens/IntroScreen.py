@@ -5,7 +5,7 @@ pygame.font.init()
 
 
 class IntroScreen:
-    def __init__(self):
+    def __init__(self, app):
         self.__titleFont = titleFont = pygame.font.SysFont('Comic Sans MS', 80)
         self.__startTextFont = pygame.font.SysFont('Comic Sans MS', 60)
         self.__title = titleFont.render(

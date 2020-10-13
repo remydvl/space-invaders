@@ -14,6 +14,9 @@ class AShip(AGameObject):
     def removeLife(self, damage):
         self.__life -= damage
 
+    def getLife(self):
+        return self.__life
+
     def isDestroyed(self):
         return self.__life <= 0
 

@@ -3,6 +3,7 @@ import time
 import random
 from config.game import GAME_STATES, ALIENS_ANIMATION_TIME, ALIEN_BULLET_SPEED, MOVE_ACTION_X
 from config.game import ALIENS_MAX_RIGHT, ALIENS_SPEED_MOVE, ALIENS_SHOOT_TIME
+from config.level import LIFE_IMAGES_LEVEL, BACKGROUND_IMAGES_LEVEL
 from gameObjects import Player, Alien, AlienProjectil, PlayerProjectil
 
 pygame.font.init()
@@ -10,13 +11,14 @@ pygame.font.init()
 
 class GameScreen:
     def __init__(self, app):
+        self.__gameLevel = app.getGameLevel()
         self.__scoreFont = pygame.font.SysFont('Comic Sans MS', 50)
         self.__aliensMoveX = 0
         self.__aliensMoveY = 0
         self.__aliensLastXDirection = "RIGHT"
         self.__aliensDirection = "RIGHT"
         aliensAnimation = 0
-        self.__player = Player(0, 0)
+        self.__player = Player(0, 0, self.__gameLevel)
         self.__player.setX(
             app.getWindow().get_width() /
             2 - self.__player.getWidth() / 2)
@@ -39,7 +41,8 @@ class GameScreen:
             while colCounter < col:
                 alienSpace = 10
                 screenMarge = 50
-                newAlien = Alien(0, 0, (rowCounter % 2) + 1)
+                newAlien = Alien(0, 0, (rowCounter %
+                                        (1 + self.__gameLevel)) + 1, self.__gameLevel)
                 newAlien.setX(
                     (newAlien.getWidth() + alienSpace) *
                     colCounter + screenMarge)
@@ -50,9 +53,17 @@ class GameScreen:
 
     def draw(self, app):
 
+        if self.__gameLevel > 1:
+            app.getWindow().blit(
+                BACKGROUND_IMAGES_LEVEL[self.__gameLevel - 1], (0, 0))
+
         self.__player.draw(app.getWindow())
         for bullet in self.__playerProjectilsList:
             bullet.draw(app.getWindow())
+
+        for bullet in self.__aliensProjectilsList:
+            bullet.draw(app.getWindow())
+
         for alien in self.__aliensList:
             alien.draw(
                 app.getWindow(),
@@ -62,13 +73,30 @@ class GameScreen:
                 }
             )
 
-        for bullet in self.__aliensProjectilsList:
-            bullet.draw(app.getWindow())
+        hudXMagin = 10
+
+        scoreText = self.__scoreFont.render(
+            str(self.__player.getScore()), False, (255, 255, 255))
+
+        i = 0
+
+        while i < self.__player.getLife():
+
+            app.getWindow().blit(
+                LIFE_IMAGES_LEVEL[self.__gameLevel - 1],
+                (
+                    hudXMagin + i * 32, app.getWindow().get_height() -
+                    self.__scoreFont.get_height()
+                )
+            )
+            i += 1
 
         app.getWindow().blit(
-            self.__scoreFont.render(
-                str(self.__player.getScore()), False, (255, 255, 255)),
-            (0, 0)
+            scoreText,
+            (
+                app.getWindow().get_width() - scoreText.get_width() - hudXMagin,
+                app.getWindow().get_height() - scoreText.get_height()
+            )
         )
 
     def update(self, app):
@@ -82,9 +110,10 @@ class GameScreen:
 
         # Projectiles Vaisseau
         for bullet in self.__playerProjectilsList:
-            bullet.setY(bullet.getY() - 10)
-            if bullet.getY() < 0:
-                bullet.destroy()
+            if not bullet.isInDestroyProcess():
+                bullet.setY(bullet.getY() - 10)
+                if bullet.getY() < 0:
+                    bullet.destroy()
 
         i = len(self.__playerProjectilsList) - 1
         while i >= 0:
@@ -122,7 +151,9 @@ class GameScreen:
             randomAlien = self.__aliensList[randomNumber]
             bullet = AlienProjectil(
                 randomAlien.getX() + self.__aliensMoveX + (randomAlien.getWidth() / 2),
-                randomAlien.getY() + self.__aliensMoveY + (randomAlien.getHeight() / 2)
+                randomAlien.getY() + self.__aliensMoveY + (randomAlien.getHeight() / 2),
+                self.__gameLevel,
+                randomAlien.getType()
             )
             self.__aliensProjectilsList.append(bullet)
 
@@ -137,20 +168,23 @@ class GameScreen:
         # Deplacement Projectiles aliens et collision vaisseau
         for alien in self.__aliensList:
             for bullet in self.__playerProjectilsList:
-                if bullet.getX() + bullet.getWidth() >= alien.getX() + self.__aliensMoveX and bullet.getX() <= alien.getX() + self.__aliensMoveX + alien.getWidth():
-                    if bullet.getY() + bullet.getHeight() >= alien.getY() + self.__aliensMoveY and bullet.getY() <= alien.getY() + self.__aliensMoveY + alien.getHeight():
-                        bullet.destroy()
-                        alien.removeLife(1)
-                        self.__player.setScore(self.__player.getScore() + 10)
+                if not bullet.isInDestroyProcess():
+                    if bullet.getX() + bullet.getWidth() >= alien.getX() + self.__aliensMoveX and bullet.getX() <= alien.getX() + self.__aliensMoveX + alien.getWidth():
+                        if bullet.getY() + bullet.getHeight() >= alien.getY() + self.__aliensMoveY and bullet.getY() <= alien.getY() + self.__aliensMoveY + alien.getHeight():
+                            bullet.destroy()
+                            alien.removeLife(1)
+                            self.__player.setScore(
+                                self.__player.getScore() + 10)
 
         for bullet in self.__aliensProjectilsList:
-            bullet.setY(bullet.getY() + ALIEN_BULLET_SPEED)
-            if bullet.getY() > app.getWindow().get_height():
-                bullet.destroy()
-            elif bullet.getX() + bullet.getWidth() >= self.__player.getX() and bullet.getX() <= self.__player.getX() + self.__player.getWidth():
-                if bullet.getY() + bullet.getHeight() >= self.__player.getY() and bullet.getY() <= self.__player.getY() + self.__player.getHeight():
+            if not bullet.isInDestroyProcess():
+                bullet.setY(bullet.getY() + ALIEN_BULLET_SPEED)
+                if bullet.getY() > app.getWindow().get_height():
                     bullet.destroy()
-                    self.__player.removeLife(1)
+                elif bullet.getX() + bullet.getWidth() >= self.__player.getX() and bullet.getX() <= self.__player.getX() + self.__player.getWidth():
+                    if bullet.getY() + bullet.getHeight() >= self.__player.getY() and bullet.getY() <= self.__player.getY() + self.__player.getHeight():
+                        bullet.destroy()
+                        self.__player.removeLife(1)
 
         i = len(self.__aliensProjectilsList) - 1
         while i >= 0:
@@ -171,7 +205,7 @@ class GameScreen:
                 if event.key == pygame.K_LEFT:
                     self.__player.moveX(MOVE_ACTION_X["LEFT"])
                 if event.key == pygame.K_SPACE:
-                    bullet = PlayerProjectil(0, 0)
+                    bullet = PlayerProjectil(0, 0, self.__gameLevel)
                     bullet.setX(
                         self.__player.getX() +
                         (self.__player.getWidth() - bullet.getWidth()) / 2

@@ -6,7 +6,7 @@ pygame.font.init()
 
 class GameOverScreen:
 
-    def __init__(self):
+    def __init__(self, app):
         self.__gameOverFont = pygame.font.SysFont('Comic Sans MS', 100)
         self.__returnHomeFont = pygame.font.SysFont('Comic Sans MS', 50)
 

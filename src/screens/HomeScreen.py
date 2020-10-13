@@ -5,7 +5,7 @@ pygame.font.init()
 
 
 class HomeScreen:
-    def __init__(self):
+    def __init__(self, app):
         self.__startTextFont = pygame.font.SysFont('Comic Sans MS', 50)
 
         self.__playText = self.__startTextFont.render(
