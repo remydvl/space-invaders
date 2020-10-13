@@ -3,15 +3,20 @@ import pygame
 from config.game import MOVE_ACTION_X
 from .AShip import AShip
 from config.game import PLAYER_SPEED_MOVE, PLAYER_LIFES
-
-shipImage = pygame.image.load(
-    "./assets/images/level-1/vaisseau.png")
+from config.level import PLAYER_IMAGES_LEVEL
 
 
 class Player(AShip):
 
-    def __init__(self, x, y):
-        super().__init__(x, y, 32, 32, PLAYER_LIFES, shipImage)
+    def __init__(self, x, y, gameLevel):
+        super().__init__(
+            x,
+            y,
+            32,
+            32,
+            PLAYER_LIFES,
+            PLAYER_IMAGES_LEVEL[gameLevel - 1]
+        )
         self.__score = 0
 
     def getScore(self):

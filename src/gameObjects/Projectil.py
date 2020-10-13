@@ -2,15 +2,7 @@ import pygame
 import time
 from .AGameObject import AGameObject
 from config.game import PROJECTIL_TIME_BEFORE_DESTROY
-
-playerShootImage = pygame.image.load(
-    "./assets/images/level-1/shoot.png")
-
-alienShootImage = pygame.image.load(
-    "./assets/images/level-1/shootAlien.png")
-
-destroyShootImage = pygame.image.load(
-    "./assets/images/level-1/explosion.png")
+from config.level import ALINE_SHOOT_IMAGES_LEVEL, PLAYER_SHOOT_IMAGES_LEVEL, ALIEN_SHOOT_DESTROY_IMAGES_LEVEL, PLAYER_SHOOT_DESTROY_IMAGES_LEVEL
 
 
 class AProjectil(AGameObject):
@@ -29,7 +21,6 @@ class AProjectil(AGameObject):
 
     def destroy(self):
         self.__destroyInProcess = True
-        self.setImage(destroyShootImage)
         lastWidth = self.getWidth()
         lastHeight = self.getHeight()
         self.setHeight(32)
@@ -45,10 +36,29 @@ class AProjectil(AGameObject):
 
 
 class AlienProjectil(AProjectil):
-    def __init__(self, x, y,):
-        super().__init__(x, y, 6, 12, alienShootImage)
+    def __init__(self, x, y, gameLevel, alienType=0):
+        super().__init__(
+            x,
+            y,
+            6,
+            12,
+            ALINE_SHOOT_IMAGES_LEVEL[gameLevel - 1][alienType - 1]
+        )
+        self.__gameLevel = gameLevel
+        self.__type = alienType
+
+    def destroy(self):
+        self.setImage(
+            ALIEN_SHOOT_DESTROY_IMAGES_LEVEL[self.__gameLevel - 1][self.__type - 1])
+        super().destroy()
 
 
 class PlayerProjectil(AProjectil):
-    def __init__(self, x, y,):
-        super().__init__(x, y, 6, 12, playerShootImage)
+    def __init__(self, x, y, gameLevel):
+        self.__gameLevel = gameLevel
+        super().__init__(x, y, 6, 12, PLAYER_SHOOT_IMAGES_LEVEL[gameLevel - 1])
+
+    def destroy(self):
+        self.setImage(
+            PLAYER_SHOOT_DESTROY_IMAGES_LEVEL[self.__gameLevel - 1])
+        super().destroy()

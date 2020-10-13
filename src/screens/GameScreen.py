@@ -3,23 +3,22 @@ import time
 import random
 from config.game import GAME_STATES, ALIENS_ANIMATION_TIME, ALIEN_BULLET_SPEED, MOVE_ACTION_X
 from config.game import ALIENS_MAX_RIGHT, ALIENS_SPEED_MOVE, ALIENS_SHOOT_TIME
+from config.level import LIFE_IMAGES_LEVEL, BACKGROUND_IMAGES_LEVEL
 from gameObjects import Player, Alien, AlienProjectil, PlayerProjectil
 
 pygame.font.init()
 
 
-lifeImage = pygame.image.load("./assets/images/level-1/coeur.png")
-
-
 class GameScreen:
     def __init__(self, app):
+        self.__gameLevel = app.getGameLevel()
         self.__scoreFont = pygame.font.SysFont('Comic Sans MS', 50)
         self.__aliensMoveX = 0
         self.__aliensMoveY = 0
         self.__aliensLastXDirection = "RIGHT"
         self.__aliensDirection = "RIGHT"
         aliensAnimation = 0
-        self.__player = Player(0, 0)
+        self.__player = Player(0, 0, self.__gameLevel)
         self.__player.setX(
             app.getWindow().get_width() /
             2 - self.__player.getWidth() / 2)
@@ -42,7 +41,8 @@ class GameScreen:
             while colCounter < col:
                 alienSpace = 10
                 screenMarge = 50
-                newAlien = Alien(0, 0, (rowCounter % 2) + 1)
+                newAlien = Alien(0, 0, (rowCounter %
+                                        (1 + self.__gameLevel)) + 1, self.__gameLevel)
                 newAlien.setX(
                     (newAlien.getWidth() + alienSpace) *
                     colCounter + screenMarge)
@@ -53,9 +53,17 @@ class GameScreen:
 
     def draw(self, app):
 
+        if self.__gameLevel > 1:
+            app.getWindow().blit(
+                BACKGROUND_IMAGES_LEVEL[self.__gameLevel - 1], (0, 0))
+
         self.__player.draw(app.getWindow())
         for bullet in self.__playerProjectilsList:
             bullet.draw(app.getWindow())
+
+        for bullet in self.__aliensProjectilsList:
+            bullet.draw(app.getWindow())
+
         for alien in self.__aliensList:
             alien.draw(
                 app.getWindow(),
@@ -64,9 +72,6 @@ class GameScreen:
                     "y": self.__aliensMoveY
                 }
             )
-
-        for bullet in self.__aliensProjectilsList:
-            bullet.draw(app.getWindow())
 
         hudXMagin = 10
 
@@ -78,7 +83,7 @@ class GameScreen:
         while i < self.__player.getLife():
 
             app.getWindow().blit(
-                lifeImage,
+                LIFE_IMAGES_LEVEL[self.__gameLevel - 1],
                 (
                     hudXMagin + i * 32, app.getWindow().get_height() -
                     self.__scoreFont.get_height()
@@ -146,7 +151,9 @@ class GameScreen:
             randomAlien = self.__aliensList[randomNumber]
             bullet = AlienProjectil(
                 randomAlien.getX() + self.__aliensMoveX + (randomAlien.getWidth() / 2),
-                randomAlien.getY() + self.__aliensMoveY + (randomAlien.getHeight() / 2)
+                randomAlien.getY() + self.__aliensMoveY + (randomAlien.getHeight() / 2),
+                self.__gameLevel,
+                randomAlien.getType()
             )
             self.__aliensProjectilsList.append(bullet)
 
@@ -198,7 +205,7 @@ class GameScreen:
                 if event.key == pygame.K_LEFT:
                     self.__player.moveX(MOVE_ACTION_X["LEFT"])
                 if event.key == pygame.K_SPACE:
-                    bullet = PlayerProjectil(0, 0)
+                    bullet = PlayerProjectil(0, 0, self.__gameLevel)
                     bullet.setX(
                         self.__player.getX() +
                         (self.__player.getWidth() - bullet.getWidth()) / 2
