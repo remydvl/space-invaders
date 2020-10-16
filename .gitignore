@@ -1,2 +1,5 @@
 __pycache__
-build
+build/
+dist/
+space-evolution_v-1-0-0_win/
+index.spec
